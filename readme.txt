@@ -8,7 +8,7 @@ rlwrap scala run .
 (load "lib/list.iu")(load "lib/math.iu")    ; order matters
 (map (lambda (x) (* x x)) (quote (1 2 3)))  ; (1 4 9)
 (unique (quote (1 2 2 3 3 3 4)))            ; (1 2 3 4)
-(load "exa/matrix.u")
+(load "exa/mat.iu")
 ====================================
 #t #nil + - * / % ^ < > = <= >= sqrt
 list define lambda if cond load quote
