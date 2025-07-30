@@ -1,0 +1,60 @@
+; Author: mtx
+
+(define rang
+  (lambda (s e)
+    (if (> s e)
+        #nil
+        (cons s (rang (+ s 1) e)))))
+
+(define map
+  (lambda (f xs)
+    (if (eq xs #nil)
+        #nil
+        (cons (f (car xs))
+              (map f (cdr xs))))))
+
+(define sum
+  (lambda (xs)
+    (if (eq xs #nil)
+        0
+        (+ (car xs)
+           (sum (cdr xs))))))
+
+(define transpose
+  (lambda (m)
+    (if (eq (car m) #nil)
+        #nil
+        (cons
+         (map (lambda (row) (car row)) m)
+         (transpose
+          (map (lambda (row) (cdr row)) m))))))
+
+(define dot
+  (lambda (v1 v2)
+    (sum (* v1 v2))))
+
+(define matmul
+  (lambda (A B)
+    (map (lambda (row)
+           (map (lambda (col)
+                  (dot row col))
+                (transpose B)))
+         A)))
+
+(define N 100)
+
+(define idxs (rang 1 N))
+
+(define A100
+  (map (lambda (i)
+         (map (lambda (j) (+ i j))
+              idxs))
+       idxs))
+
+(define B100
+  (map (lambda (i)
+         (map (lambda (j) (* i j))
+              idxs))
+       idxs))
+
+(matmul A100 B100)

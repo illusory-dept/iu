@@ -1,0 +1,33 @@
+(define nil?   (lambda (x) (eq x '())))
+(define map    (lambda (f xs) (if (nil? xs) '() (cons (f (car xs)) (map f (cdr xs))))))
+(define append (lambda (xs ys) (if (nil? xs) ys (cons (car xs) (append (cdr xs) ys)))))
+(define revacc (lambda (a x) (if (nil? x) a (revacc (cons (car x) a) (cdr x)))))
+(define reverse (lambda (xs) (revacc '() xs)))
+(define length (lambda (xs) (if (nil? xs) 0 (+ 1 (length (cdr xs))))))
+(define repeat-str
+  (lambda (s n)
+    (if (<= n 0) "" (str-append s (repeat-str s (- n 1))))))
+(define cell (lambda (bit) (if (= bit 0) " " "*")))
+(define next-row
+  (lambda (row) (% (+ (cons 0 row) (append row (list 0))) 2)))
+(define rows
+  (lambda (n row acc)
+    (if (= n 0) (reverse acc)
+        (rows (- n 1) (next-row row) (cons row acc)))))
+; render one row: left pad with (n - len(row)) spaces, then join cells with one space
+(define render-row-centered
+  (lambda (row n)
+    (str-append
+      (repeat-str " " (- n (length row)))         ; left pad, total width = 2n-1
+      (join " " (map cell row)))))                ; put a space between each cell
+; render all rows centered
+(define render-centered
+  (lambda (rs n)
+    (if (nil? rs) '()
+        (cons (render-row-centered (car rs) n)
+              (render-centered (cdr rs) n)))))
+(define sierp
+  (lambda (n)
+    (join "\n" (render-centered (rows n (list 1) '()) n))))
+
+(println (sierp 16))

@@ -1,0 +1,65 @@
+; math.iu
+
+; Constants
+(define pi 3.141592653589793)
+(define e  2.718281828459045)
+
+; Basics
+(define abs  (lambda (x) (if (< x 0) (- 0 x) x)))
+(define min  (lambda (a b) (if (< a b) a b)))
+(define max  (lambda (a b) (if (> a b) a b)))
+(define sign (lambda (x) (cond ((< x 0) -1) ((> x 0) 1) (else 0))))
+(define clamp (lambda (x lo hi) (min (max x lo) hi)))
+
+(define nil? (lambda (x) (eq x '())))
+
+; Result has the sign of the divisor
+(define mod
+  (lambda (a b)
+    ((lambda (r)
+       (if (< r 0)
+           (if (< b 0) (- r b) (+ r b))
+           r))
+     (% a b))))
+
+; GCD, tolerant of non-positives
+(define gcd-iter
+  (lambda (x y)
+    (cond ((= y 0) (abs x))
+          (else (gcd-iter y (mod x y))))))
+
+(define gcd
+  (lambda (a b)
+    (gcd-iter (abs a) (abs b))))
+
+; LCM using gcd; 0 if any input is 0
+(define lcm
+  (lambda (a b)
+    (if (or (= a 0) (= b 0))
+        0
+        (/ (* (abs a) (abs b)) (gcd a b)))))
+
+; Factorial
+(define fact-acc
+  (lambda (k acc)
+    (if (<= k 1) acc (fact-acc (- k 1) (* acc k)))))
+
+(define fact (lambda (n) (fact-acc n 1)))
+
+; Fib, O(n)
+(define fib-acc
+  (lambda (n a b)
+    (if (<= n 0) a (fib-acc (- n 1) b (+ a b)))))
+
+(define fib (lambda (n) (fib-acc n 0 1)))
+
+; use list.iu
+(define mean
+  (lambda (xs)
+    (let-size (lambda (len s) (/ s len))
+              (length xs) (sum xs))))
+
+; (let-size f a b) => (f a b)
+(define let-size (lambda (f a b) (f a b)))
+
+; end
